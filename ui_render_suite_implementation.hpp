@@ -55,6 +55,9 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
             dd.dropdown_background.rgb_colors, dd.modified_signal.has_just_changed());
     }
 
+    /**
+     * @pre assumes that the absolute_position_with_colored_vertex_shader_batcher exists
+     */
     void render_dropdown_option(const UIDropdownOption &udo) override {
 
         auto text_ivpsc = udo.text_ivpsc;
