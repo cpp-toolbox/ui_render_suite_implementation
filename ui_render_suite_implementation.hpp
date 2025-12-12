@@ -56,10 +56,8 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
      * @details This method queues a draw command for a simple colored rectangle using
      *          the absolute-position colored vertex shader batcher.
      */
-    void render_colored_box(const UIRect &cb) override {
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            cb.ivpsc.id, cb.ivpsc.indices, cb.ivpsc.xyz_positions, cb.ivpsc.rgb_colors,
-            cb.modified_signal.has_just_changed());
+    void render_colored_box(UIRect &cb) override {
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(cb.ivpsc);
     }
 
     /**
@@ -70,14 +68,10 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
      * @details Two draw calls are queued: one for the text and another for the background.
      *          Each part uses separate IndexedVertexPositionColor structures.
      */
-    void render_text_box(const UITextBox &tb) override {
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            tb.text_drawing_ivpsc.id, tb.text_drawing_ivpsc.indices, tb.text_drawing_ivpsc.xyz_positions,
-            tb.text_drawing_ivpsc.rgb_colors, tb.modified_signal.has_just_changed());
+    void render_text_box(UITextBox &tb) override {
 
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            tb.background_ivpsc.id, tb.background_ivpsc.indices, tb.background_ivpsc.xyz_positions,
-            tb.background_ivpsc.rgb_colors, tb.modified_signal.has_just_changed());
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(tb.text_drawing_ivpsc);
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(tb.background_ivpsc);
     }
 
     /**
@@ -88,14 +82,9 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
      * @details This function queues draw calls for both the text and background portions.
      *          The clickable area is typically visually distinct from a standard text box.
      */
-    void render_clickable_text_box(const UIClickableTextBox &cr) override {
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            cr.text_drawing_ivpsc.id, cr.text_drawing_ivpsc.indices, cr.text_drawing_ivpsc.xyz_positions,
-            cr.text_drawing_ivpsc.rgb_colors);
-
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            cr.ivpsc.id, cr.ivpsc.indices, cr.ivpsc.xyz_positions, cr.ivpsc.rgb_colors,
-            cr.modified_signal.has_just_changed());
+    void render_clickable_text_box(UIClickableTextBox &cr) override {
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(cr.text_drawing_ivpsc);
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(cr.ivpsc);
     }
 
     /**
@@ -106,14 +95,9 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
      * @details The input box is composed of text (the current user input or placeholder)
      *          and a background. Both are drawn as separate geometry.
      */
-    void render_input_box(const UIInputBox &ib) override {
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            ib.text_drawing_ivpsc.id, ib.text_drawing_ivpsc.indices, ib.text_drawing_ivpsc.xyz_positions,
-            ib.text_drawing_ivpsc.rgb_colors, ib.modified_signal.has_just_changed());
-
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            ib.background_ivpsc.id, ib.background_ivpsc.indices, ib.background_ivpsc.xyz_positions,
-            ib.background_ivpsc.rgb_colors, ib.modified_signal.has_just_changed());
+    void render_input_box(UIInputBox &ib) override {
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(ib.text_drawing_ivpsc);
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(ib.background_ivpsc);
     }
 
     /**
@@ -124,14 +108,10 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
      * @details The dropdown consists of the main visible area (background) and
      *          its currently selected text. Both are rendered as separate draw calls.
      */
-    void render_dropdown(const UIDropdown &dd) override {
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            dd.dropdown_text_ivpsc.id, dd.dropdown_text_ivpsc.indices, dd.dropdown_text_ivpsc.xyz_positions,
-            dd.dropdown_text_ivpsc.rgb_colors, dd.modified_signal.has_just_changed());
+    void render_dropdown(UIDropdown &dd) override {
 
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            dd.dropdown_background.id, dd.dropdown_background.indices, dd.dropdown_background.xyz_positions,
-            dd.dropdown_background.rgb_colors, dd.modified_signal.has_just_changed());
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(dd.dropdown_text_ivpsc);
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(dd.dropdown_background);
     }
 
     /**
@@ -146,17 +126,9 @@ class UIRenderSuiteImpl : public IUIRenderSuite {
      *          Both are rendered as individual draw calls to allow per-option
      *          color and layout customization.
      */
-    void render_dropdown_option(const UIDropdownOption &udo) override {
-
-        auto text_ivpsc = udo.text_ivpsc;
-        auto ivpsc = udo.background_ivpsc;
-
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            text_ivpsc.id, text_ivpsc.indices, text_ivpsc.xyz_positions, text_ivpsc.rgb_colors,
-            udo.modified_signal.has_just_changed());
-
-        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(
-            ivpsc.id, ivpsc.indices, ivpsc.xyz_positions, ivpsc.rgb_colors, udo.modified_signal.has_just_changed());
+    void render_dropdown_option(UIDropdownOption &udo) override {
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(udo.text_ivpsc);
+        batcher.absolute_position_with_colored_vertex_shader_batcher.queue_draw(udo.background_ivpsc);
     }
 };
 
